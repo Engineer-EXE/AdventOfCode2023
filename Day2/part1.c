@@ -9,8 +9,6 @@ int make_substr(char** dest, size_t* dest_size, const char* input, int start, in
 void preprocess_input(char** input_str);
 void find_max_colours(const char* input_str, int a[], int size_a);
 
-
-
 int main(int argc, char* argv[]){
 
     if (argc != 2){
@@ -38,6 +36,7 @@ int main(int argc, char* argv[]){
         int a[1] = {0};
         int len = 1;
         find_max_colours(line, a, len);
+        printf("--------------------------------------------------\n");
     }
     
     free(line);
@@ -54,16 +53,18 @@ int make_substr(char** dest, size_t* dest_size, const char* input, int start, in
     if (start < 0 || end <= start || start > strlen(input) || end > strlen(input))
         return -1;
 
+    int min_len = (end - start + 1); // Minimum length needed by dest to fit the string (includes NULL termination)
+
     if (*dest == NULL && *dest_size == 0){
-        *dest = (char*)calloc(sizeof(char), strlen(input) + 1);
+        *dest = (char*)calloc(sizeof(char), min_len);
         if (*dest == NULL)
             return -1;
 
-        *dest_size = strlen(input) + 1;
+        *dest_size = min_len;
     }
 
-    if (*dest_size < (strlen(input) + 1)){
-        char* new_dest = (char*)reallocarray(*dest, sizeof(char), strlen(input) + 1);
+    if (*dest_size < min_len){
+        char* new_dest = (char*)reallocarray(*dest, sizeof(char), min_len);
 
         if(new_dest == NULL){
             printf("Failed to realloc array. dest has been freed\n");
@@ -71,14 +72,16 @@ int make_substr(char** dest, size_t* dest_size, const char* input, int start, in
         }
 
         *dest = new_dest;
-        *dest_size = strlen(input) + 1;
+        *dest_size = min_len;
     }
+
     int j = 0;
     for (int i = start; i < end; i++){
         (*dest)[j] = input[i];
         j++;
     }
-    (*dest)[end] = '\0';
+
+    (*dest)[j] = '\0';
     return strlen(*dest);
 }
 
@@ -99,7 +102,7 @@ void preprocess_input(char** input_str){
                 // past all the whitespace after the delimiter
                 char* new_str = NULL;
                 size_t len_new_str = 0;
-                int success = make_substr(&new_str, &len_new_str, *input_str, i, strlen(*input_str) - 1);
+                int success = make_substr(&new_str, &len_new_str, *input_str, i, strlen(*input_str));
                 if (success == -1){
                     free(new_str);
                     return;
@@ -122,12 +125,13 @@ void find_max_colours(const char* input_str, int a[], int size_a){
     int curr_start = 0;
     int game_created = 0;
 
-    for (int i = 0; i < strlen(input_str); i++){
+    int i;
+    for (i = 0; i < strlen(input_str); i++){
         if (game_created){
             curr_start = i;
             game_created = 0;
         }
-        if (input_str[i] == ';' || input_str[i] == '\n' || input_str[i] == '\0'){
+        if (input_str[i] == ';'){
             int success = make_substr(&one_game, &len_one_game, input_str, curr_start, i);
             if (success == -1){
                 free(one_game);
@@ -135,7 +139,25 @@ void find_max_colours(const char* input_str, int a[], int size_a){
             }
             game_created = 1;
             printf("One game: %s\n", one_game);
+        } else if (input_str[i] == '\n'){
+            int success = make_substr(&one_game, &len_one_game, input_str, curr_start, i);
+            if (success == -1){
+                free(one_game);
+                return;
+            }
+            printf("One game: %s\n", one_game);
+            free(one_game);
+            return;
         }
+    }
+    
+    if (input_str[i] == '\0'){
+        int success = make_substr(&one_game, &len_one_game, input_str, curr_start, i);
+        if (success == -1){
+            free(one_game);
+            return;
+        }
+        printf("One game: %s\n", one_game);
     }
     free(one_game);
 }
