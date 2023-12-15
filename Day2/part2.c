@@ -8,7 +8,6 @@
 #define TRUE 1
 #define FALSE 0
 
-const uint32_t MAX_CUBES[3] = {12, 13, 14};
 const char* COLOURS[3] = {"red", "green", "blue"};
 
 ssize_t make_substr(char** dest, size_t* dest_size, const char* input, size_t start, size_t end);
@@ -35,7 +34,6 @@ int main(int argc, char* argv[]){
     size_t n = 0;
     ssize_t chars_read = 0;
     int32_t total = 0; 
-    int32_t game_num = 1;
 
     while((chars_read = getline(&line, &n, input_file)) != -1){
         // printf("Read new line:\n%s\n", line);
@@ -53,14 +51,7 @@ int main(int argc, char* argv[]){
             printf("Issue find_max_number\n");
             continue;
         }
-
-        // printf("The array: %u, %u, %u\n", colours[0], colours[1], colours[2]);
-        // printf("--------------------------------------------------\n");
-        if (colours[0] <= MAX_CUBES[0] && colours[1] <= MAX_CUBES[1] && colours[2] <= MAX_CUBES[2]){
-
-            total += game_num;
-        }
-        game_num++;
+        total += colours[0] * colours[1] * colours[2];
     }
 
     printf("Total = %d\n", total);
