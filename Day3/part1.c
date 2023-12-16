@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <sys/types.h>
+#include "SLL.h"
+
+#define NUM_SYMBOLS 31
 
 int main(int argc, char* argv[]){
     
@@ -20,28 +23,33 @@ int main(int argc, char* argv[]){
     }
 
     // Declare and initialise array of symbols 
-    char symbols[32];
+    char symbols[NUM_SYMBOLS];
     int32_t i = 0;
-    for (char c = 0x21; c <= 0x2F; c++){
-        if (i < 32) 
+    for (char c = 0x21; c <= 0x2D; c++){
+        if (i < NUM_SYMBOLS) 
             symbols[i] = c;
         i++;
     }
 
+    if (i < NUM_SYMBOLS)
+        symbols[i] = 0x2F;
+
+    i++;
+
     for (char c = 0x3A; c <= 0x40; c++){
-        if (i < 32) 
+        if (i < NUM_SYMBOLS) 
             symbols[i] = c;
         i++;
     }
 
     for (char c = 0x5B; c <= 0x60; c++){
-        if (i < 32)
+        if (i < NUM_SYMBOLS)
             symbols[i] = c;
         i++;
     }
 
     for (char c = 0x7B; c <= 0x7E; c++){
-        if (i < 32)
+        if (i < NUM_SYMBOLS)
             symbols[i] = c;
         i++;
     }
@@ -53,6 +61,23 @@ int main(int argc, char* argv[]){
 
     while((char_read = getline(&line, &line_len, input_file)) != -1){
         printf("Read in: %s\n", line);
+        sll* list = create_sll();
+        for (ssize_t i = 0; i < char_read; i++) {
+            for (int32_t j = 0; j < NUM_SYMBOLS; j++) {
+                if (line[i] == symbols[j]) {
+                    add_sll_start(&list, i);
+                    break;
+                }
+            }
+        }
+        printf("Symbols found at: ");
+        sll_node* current = list->head;
+        while(current) {
+            printf("%d, ", current->m_num);
+            current = current->next;
+        }
+        printf("\n---------------------------------------------------\n");
+        delete_sll(&list);
     }
 
     free(line);
