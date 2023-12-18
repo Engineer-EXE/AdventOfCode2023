@@ -36,6 +36,15 @@ sll* create_sll(void);
 int add_sll_start(sll** list, int32_t num);
 
 /**
+ * @brief Finds the first node that contains num_to_find
+ * 
+ * @param list Linked list which we want to search 
+ * @param num_to_find Integer we want to find 
+ * @return sll* Pointer to the first node that contains num_to_find. Returns NULL if not found 
+ */
+sll_node* find_first_elem(const sll* list, int32_t num_to_find);
+
+/**
  * @brief Deletes the passed linked list, freeing all dynamically-allocated
  *        memory. It also sets the single pointer to the list equal to NULL.
  * 

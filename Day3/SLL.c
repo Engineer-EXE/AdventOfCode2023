@@ -30,6 +30,21 @@ int add_sll_start(sll** list, int32_t num) {
     return 0;   // list and/or *list was NULL
 }
 
+sll_node* find_first_elem(const sll* list, int32_t num_to_find) {
+    if (list){
+        sll_node* current = list->head;
+
+        while(current){
+            if (current->m_num == num_to_find){
+                return current;
+            }
+            current = current->next;
+        }
+    }
+
+    return NULL;
+}
+
 void delete_sll(sll** list) {
     if (list && *list) {
         // list and *list cannot be NULL
