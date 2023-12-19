@@ -80,7 +80,7 @@ ssize_t make_substr(char** dest, size_t* dest_size, const char* input, size_t st
 
     // If the dest pointer is NULL and its size is 0, we allocate heap memory
     if (*dest == NULL && *dest_size == 0){
-        *dest = (char*)calloc(sizeof(char), min_len);
+        *dest = (char*)calloc(min_len, sizeof(char));
         // Check if calloc was successfull
         if (!(*dest)){
             printf("Failed to calloc array. Exiting function make_substr\n");
@@ -92,7 +92,7 @@ ssize_t make_substr(char** dest, size_t* dest_size, const char* input, size_t st
 
     // If there isn't enough space in dest we need to increase its size
     if (*dest_size < min_len){
-        char* new_dest = (char*)reallocarray(*dest, sizeof(char), min_len);
+        char* new_dest = (char*)reallocarray(*dest, min_len, sizeof(char));
 
         // Check if reallocarray was successfull
         if(!new_dest){
